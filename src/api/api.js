@@ -1,4 +1,5 @@
 import request from 'superagent'
+import {apikey} from '../apikey/urbandictionary'
 
 export function fetchPostsApi (subreddit, cb) {
   request
@@ -12,15 +13,20 @@ export function fetchPostsApi (subreddit, cb) {
     })
 }
 
-export function UrbanDictionApi (term, cb) {
-  const url = `https://mashape-community-urban-dictionary.p.mashape.com/define?term=${term}`
-  .get(url)
-      .set("X-Mashape-Key", "")
-      .set("Accept", "text/plain")
-      .end(function (err, res) {
-        if (err || !res.ok) {
-          alert('Oh dear! An error occurred')
-        } else {
-          callback(null, res.body)
-
+export function fetchDefinitionApi (term, cb) {
+  console.log(term)
+  request
+    .get('https://mashape-community-urban-dictionary.p.mashape.com/define')
+    .query({term: term})
+    .set('X-Mashape-Key', apikey)
+    .set('Accept', 'text/plain')
+    .end(function (err, res) {
+      if (err || !res.ok) {
+        console.error('Oh dear! An error occurred')
+      } else {
+        console.log(res)
+        cb(null, res.body.list)
+      }
+    }
+  )
 }

@@ -1,4 +1,4 @@
-import {fetchPostsApi} from '../api/api'
+import {fetchPostsApi, fetchDefinitionApi} from '../api/api'
 
 export const receivePosts = (posts) => {
   return {
@@ -25,6 +25,13 @@ export const showLoadingError = () => {
   }
 }
 
+export const receiveDefinitions = (definitions) => {
+  return {
+    type: 'RECEIVE_DEFINITIONS',
+    definitions: definitions.map(definition => definition.definition)
+  }
+}
+
 export function fetchPosts (subreddit) {
   return (dispatch) => {
     dispatch(loadingPost())
@@ -35,6 +42,18 @@ export function fetchPosts (subreddit) {
       }
       dispatch(receivePosts(res))
       dispatch(finishedLoading())
+    })
+  }
+}
+
+export function fetchDefinition (term) {
+  return (dispatch) => {
+    fetchDefinitionApi(term, (err, res) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+      dispatch(receiveDefinitions(res))
     })
   }
 }
