@@ -4,10 +4,8 @@ import Subreddit from '../components/Subreddit'
 
 const mapStateToProps = (state) => {
   return {
-    subreddits: state.subreddits
+    subreddits: state.subreddits.posts
   }
 }
 
-export default connect(
-  mapStateToProps
-)(Subreddit)
+export default connect(mapStateToProps)(Subreddit)

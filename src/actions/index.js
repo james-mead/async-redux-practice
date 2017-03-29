@@ -1,4 +1,4 @@
-import request from 'superagent'
+import {fetchPostsApi} from '../api/api'
 
 export const receivePosts = (posts) => {
   return {
@@ -7,16 +7,34 @@ export const receivePosts = (posts) => {
   }
 }
 
+export const loadingPost = () => {
+  return {
+    type: 'LOADING_POSTS'
+  }
+}
+
+export const finishedLoading = () => {
+  return {
+    type: 'FINISHED_LOADING'
+  }
+}
+
+export const showLoadingError = () => {
+  return {
+    type: 'SHOW_LOADING_ERROR'
+  }
+}
+
 export function fetchPosts (subreddit) {
   return (dispatch) => {
-    request
-      .get(`http://www.reddit.com/r/${subreddit}.json`)
-      .end((err, res) => {
-        if (err) {
-          console.error(err.message)
-          return
-        }
-        dispatch(receivePosts(res.body.data.children))
-      })
+    dispatch(loadingPost())
+    fetchPostsApi(subreddit, (err, res) => {
+      if (err) {
+        dispatch(showLoadingError())
+        return
+      }
+      dispatch(receivePosts(res))
+      dispatch(finishedLoading())
+    })
   }
 }
